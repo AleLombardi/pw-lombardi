@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.tss.pw.users;
+package it.tss.pw.users.users;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
  * @author posta
  */
 public class User  implements Serializable{
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String usr;
@@ -35,11 +35,11 @@ public class User  implements Serializable{
     
     
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

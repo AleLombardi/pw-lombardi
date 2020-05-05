@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.tss.pw.users;
+package it.tss.pw.users.users;
 
+import it.tss.pw.users.users.User;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,14 +30,21 @@ public class UserStore {
     public Collection<User>all(){
         return users.values();
     }
-    
+    public User find(Long id){
+        return users.get(id);
+    }
     public User create(User u){
-        return users.putIfAbsent(u.getId(), u);
+        System.out.println("create user" + u);
+        users.putIfAbsent(u.getId(), u);
+        return users.get(u.getId());
     }
     public User update(User u){
+        System.out.println("update user" + u);
+        users.put(u.getId(),u);
         return users.put(u.getId(), u);
     }
     public void delete(Long  id){
+        System.out.println("delet user" + id);
        users.remove(id);
     }
 }
