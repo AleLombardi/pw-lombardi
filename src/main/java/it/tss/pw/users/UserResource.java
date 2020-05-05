@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.tss.pw.users.users;
+package it.tss.pw.users;
 
-import it.tss.pw.users.users.User;
+import it.tss.pw.users.User;
 import java.util.Collection;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
