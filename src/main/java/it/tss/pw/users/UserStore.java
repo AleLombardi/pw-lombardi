@@ -9,6 +9,7 @@ import it.tss.pw.users.User;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -47,4 +48,22 @@ public class UserStore {
         System.out.println("delet user" + id);
        users.remove(id);
     }
+    
+    
+    public Collection<User> search(String search){
+        return users.values().stream()
+                
+                .filter(v -> this.search(v,search)).collect(Collectors.toList());
+        
+    }
+    
+    private boolean search(User u, String search){
+        return (u.getFirstName()!= null && u.getFirstName().contains(search))
+                || (u.getFirstName() != null && u.getFirstName().contains(search))
+                ||(u.getUsr() != null && u.getUsr().contains(search));
+        
+        
+    }
+    
+    
 }

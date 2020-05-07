@@ -8,16 +8,20 @@ package it.tss.pw.users;
 import it.tss.pw.users.User;
 import java.util.Collection;
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import static jdk.nashorn.internal.runtime.Debug.id;
 
 /**
  *
@@ -36,7 +40,12 @@ public class UserResource {
         return store.all();
     
     }
-    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+   public Collection<User> all(@QueryParam("search")String search){
+       return search == null ? store.all(): store.search(search);
+       }
+   
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -89,7 +98,18 @@ public class UserResource {
         
     }
     
-    @DELETE
+    @PATCH
+    @Path("{id}/firstname")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User updateFirstName(@PathParam("id")Long id, JsonObject json){
+        User found = store.find(id);
+        found.setFirstName(json.getString("firstName"));
+        return store.update(found);
+    }
+    
+
+
+        @DELETE
     @Path("{id}")
     public void delete(@PathParam("id")Long id){
         store.delete(id);
