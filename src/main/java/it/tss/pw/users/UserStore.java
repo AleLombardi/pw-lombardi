@@ -25,7 +25,7 @@ import javax.persistence.PersistenceContext;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class UserStore {
 
-    @PersistenceContext(name = "pw")
+    @PersistenceContext(name = "pw_lombardi")
     EntityManager em;
 
     @PostConstruct

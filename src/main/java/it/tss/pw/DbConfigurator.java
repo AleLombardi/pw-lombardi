@@ -5,7 +5,6 @@
  */
 package it.tss.pw;
 
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.annotation.PostConstruct;
@@ -17,6 +16,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
+
 /**
  *
  * @author posta
@@ -36,13 +36,13 @@ import org.flywaydb.core.Flyway;
 public class DbConfigurator {
 
     public static final String MARIADB_HOST = "localhost";
-    public static final int MARIADB_PORT = 3306;
+    public static final int MARIADB_PORT = 3346;
     public static final String MARIADB_PROTOCOL = "tcp";
     public static final String MARIADB_USR = "pwapp";
     public static final String MARIADB_USER_PWD = "pwapp";
     public static final String MARIADB_DATABASE_NAME = "pw_lombardi";
     public static final String MARIADB_CLASS_NAME = "org.mariadb.jdbc.MariaDbDataSource";
-    public static final String DS_JNDI_NAME = "java:global/jdbc/pw";
+    public static final String DS_JNDI_NAME = "java:global/jdbc/pw_lombardi";
 
     @Resource(lookup = DS_JNDI_NAME)
     private DataSource pw;
@@ -59,7 +59,7 @@ public class DbConfigurator {
     }
 
     private void checkDasource() {
-        try ( Connection connection = pw.getConnection()) {
+        try (Connection connection = pw.getConnection()) {
             System.out.println(
                     connection.getMetaData().getDatabaseProductName() + "-"
                     + connection.getCatalog()
