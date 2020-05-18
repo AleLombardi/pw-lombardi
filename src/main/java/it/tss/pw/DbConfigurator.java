@@ -40,7 +40,7 @@ public class DbConfigurator {
     public static final String MARIADB_PROTOCOL = "tcp";
     public static final String MARIADB_USR = "pwapp";
     public static final String MARIADB_USER_PWD = "pwapp";
-    public static final String MARIADB_DATABASE_NAME = "pw_lombardi";
+    public static final String MARIADB_DATABASE_NAME = "miodb";
     public static final String MARIADB_CLASS_NAME = "org.mariadb.jdbc.MariaDbDataSource";
     public static final String DS_JNDI_NAME = "java:global/jdbc/pw_lombardi";
 
