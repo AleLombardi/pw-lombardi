@@ -5,33 +5,32 @@
  */
 package it.tss.pw.posts;
 
-import it.tss.pw.users.User;
+import it.tss.pw.documents.DocumentsResource;
 import it.tss.pw.users.UserStore;
-import java.util.List;
+import it.tss.pw.users.User;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
 /**
  *
  * @author posta
  */
-
 @RolesAllowed("users")
-public class PostsResource {
+public class PostResource {
 
     @Context
     ResourceContext resource;
@@ -43,51 +42,51 @@ public class PostsResource {
     UserStore userStore;
 
     private Long userId;
-
-    @PostConstruct
-    public void init() {
-    }
+    private Long id;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Post> all(@QueryParam("search") String search) {
-        return search == null ? store.findByUsr(userId) : store.search(userId, search);
+    public Post find() {
+        return store.findByIdAndUsr(id, userId).orElseThrow(() -> new NotFoundException());
     }
 
-    @Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public PostResource find(@PathParam("id") Long id) {
-        PostResource sub = resource.getResource(PostResource.class);
-        sub.setId(id);
-        sub.setUserId(userId);
-        return sub;
-    }
-
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(Post p) {
+    public Post update(Post p) {
+        if (p.getId() == null || !p.getId().equals(id) || !store.findByIdAndUsr(id, userId).isPresent()) {
+            throw new BadRequestException();
+        }
         User user = userStore.find(userId).orElseThrow(() -> new NotFoundException());
         p.setOwner(user);
-        Post saved = store.create(p);
-        return Response
-                .status(Response.Status.CREATED)
-                .entity(saved)
-                .build();
+        return store.update(p);
+    }
+
+    @DELETE
+    public Response delete() {
+        Optional<Post> optional = store.findByIdAndUsr(id, userId);
+        Post found = optional.orElseThrow(() -> new NotFoundException());
+        store.delete(found.getId());
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @Path("documents")
+    public DocumentsResource documents() {
+        DocumentsResource sub = resource.getResource(DocumentsResource.class);
+        sub.setUserId(userId);
+        sub.setPostId(id);
+        return sub;
     }
 
     /*
     getter/setter
      */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public void setUserId(Long userId) {
         this.userId = userId;
     }
 
 }
-
-
-
-  
-    
-

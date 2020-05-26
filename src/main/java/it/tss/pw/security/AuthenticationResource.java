@@ -27,6 +27,9 @@ public class AuthenticationResource {
     @Inject
     UserStore store;
 
+    @Inject
+    JWTManager jwtManager;
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -34,11 +37,11 @@ public class AuthenticationResource {
         Optional<User> user = store.search(credential);
         if (user.isPresent()) {
             return Response.status(Response.Status.OK)
-                    .header("token", "ok")
+                    .header("token", token(user.get()))
                     .build();
         }
         return Response.status(Response.Status.UNAUTHORIZED)
-                .header("token", "ko")
+                .header("reason", "invalid username or password")
                 .build();
     }
 
@@ -49,11 +52,20 @@ public class AuthenticationResource {
         Optional<User> user = store.search(new Credential(usr, pwd));
         if (user.isPresent()) {
             return Response.status(Response.Status.OK)
-                    .header("token", "ok")
+                    .header("token", token(user.get()))
                     .build();
         }
         return Response.status(Response.Status.UNAUTHORIZED)
                 .header("token", "ko")
                 .build();
+    }
+
+    private String token(User usr) {
+        String result = jwtManager.generate(usr);
+        System.out.println("------------ generated token -------------------");
+        System.out.println(result);
+        System.out.println("------------ curl command for test -------------");
+        System.out.println("curl -v -i -H'Authorization: Bearer " + result + "' http://localhost:8080/pw_lombardi/resources/users");
+        return result;
     }
 }

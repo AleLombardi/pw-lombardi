@@ -5,19 +5,16 @@
  */
 package it.tss.pw.posts;
 
-import it.tss.pw.users.User;
-import it.tss.pw.users.UserAlreadyExistException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
 
 /**
  *
@@ -28,45 +25,47 @@ import javax.persistence.PersistenceContext;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class PostStore {
 
-    
-    
-    
-    @PersistenceContext(name = "pw_lombardi")
-    EntityManager em;
-
-    @PostConstruct
-    public void init() {
-
-    }
-
-   public Collection<Post> all() {
-        return em.createNamedQuery(Post.FIND_ALL)
-                .getResultList();
-    }
+    @PersistenceContext(name = "pw")
+    private EntityManager em;
 
     public Post find(Long id) {
         return em.find(Post.class, id);
     }
 
-    public Post create(Post u) {
-        if (findByUsr(u.getBody()).isPresent()) {
-            throw new UserAlreadyExistException(u.getBody());
+    public Post create(Post p) {
+        return em.merge(p);
+    }
+
+    public Post update(Post p) {
+        return em.merge(p);
+    }
+
+    public void delete(Long id) {
+        em.remove(em.find(Post.class, id));
+    }
+
+    public List<Post> findByUsr(Long userId) {
+        return em.createNamedQuery(Post.FIND_BY_USR, Post.class)
+                .setParameter("user_id", userId)
+                .getResultList();
+    }
+
+    public Optional<Post> findByIdAndUsr(Long id, Long userId) {
+        try {
+            Post result = em.createNamedQuery(Post.FIND_BY_ID_AND_USR, Post.class)
+                    .setParameter("id", id)
+                    .setParameter("user_id", userId)
+                    .getSingleResult();
+            return Optional.of(result);
+        } catch (NoResultException ex) {
+            return Optional.empty();
         }
-        return em.merge(u);
     }
-    
 
-    public Optional<Post> findByUsr(String usr) {
-        return em.createNamedQuery(Post.FIND_ALL, Post.class)
-                .setParameter("usr", usr)
-                .getResultStream()
-                .findFirst();
+    public List<Post> search(Long id, String search) {
+        return em.createNamedQuery(Post.SEARCH)
+                .setParameter("user_id", id)
+                .setParameter("search", "%" + search + "%")
+                .getResultList();
     }
-   
-
-    
-    
-    
-    
-    
 }

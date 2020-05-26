@@ -6,43 +6,28 @@
 package it.tss.pw.users;
 
 import it.tss.pw.AbstractEntity;
-import it.tss.pw.posts.Post;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Date;
 import java.util.Objects;
 import javax.json.bind.annotation.JsonbDateFormat;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
-import static jdk.nashorn.internal.runtime.Debug.id;
 
 /**
  *
  * @author posta
  */
-    @NamedQueries({
+     @NamedQueries({
     @NamedQuery(name = User.FIND_ALL, query = "select e from User e order by e.lastName"),
     @NamedQuery(name = User.FIND_BY_USR_PWD, query = "select e from User e where e.usr= :usr and e.pwd= :pwd"),
     @NamedQuery(name = User.FIND_BY_USR, query = "select e from User e where e.usr= :usr"),
-    @NamedQuery(name = User.SEARCH, query = "select e from User e where e.firstName like :fname and e.lastName like :lname and e.usr like :usr")
+    @NamedQuery(name = User.SEARCH, query = "select e from User e where e.firstName like :fname or e.lastName like :lname or e.usr like :usr")
 })
 @Entity
 @Table(name = "user")
@@ -115,6 +100,7 @@ public class User extends AbstractEntity implements Serializable {
         this.usr = usr;
     }
 
+    @JsonbTransient
     public String getPwd() {
         return pwd;
     }
@@ -134,7 +120,8 @@ public class User extends AbstractEntity implements Serializable {
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", usr=" + usr + ", pwd=" + pwd + ", birthDate="
-                + birthDate == null ? "" : birthDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + '}';
+                + birthDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + '}';
     }
 
 }
+

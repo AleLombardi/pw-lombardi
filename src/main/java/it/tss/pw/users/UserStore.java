@@ -25,7 +25,7 @@ import javax.persistence.PersistenceContext;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class UserStore {
 
-    @PersistenceContext(name = "pw_lombardi")
+    @PersistenceContext(name = "pw")
     EntityManager em;
 
     @PostConstruct
@@ -38,11 +38,13 @@ public class UserStore {
                 .getResultList();
     }
 
-    public User find(Long id) {
-        return em.find(User.class, id);
+    public Optional<User> find(Long id) {
+        User found = em.find(User.class, id);
+        return found == null ? Optional.empty() : Optional.of(found);
     }
 
     public User create(User u) {
+        System.out.println("----------------------" + u + " ----------------------------------");
         if (findByUsr(u.getUsr()).isPresent()) {
             throw new UserAlreadyExistException(u.getUsr());
         }

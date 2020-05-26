@@ -13,27 +13,17 @@ import java.util.Objects;
  * @author posta
  */
 public class Credential implements Serializable {
-    
+
     private String usr;
     private String pwd;
-    
-    
-    public Credential(){
-            
-        }
+
+    public Credential() {
+    }
 
     public Credential(String usr, String pwd) {
         this.usr = usr;
         this.pwd = pwd;
-        
-        
-        
     }
-
-   
-
-    
-    
 
     public String getUsr() {
         return usr;
@@ -53,9 +43,9 @@ public class Credential implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.usr);
-        hash = 41 * hash + Objects.hashCode(this.pwd);
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.usr);
+        hash = 37 * hash + Objects.hashCode(this.pwd);
         return hash;
     }
 
@@ -74,17 +64,12 @@ public class Credential implements Serializable {
         if (!Objects.equals(this.usr, other.usr)) {
             return false;
         }
-        if (!Objects.equals(this.pwd, other.pwd)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.pwd, other.pwd);
     }
 
     @Override
     public String toString() {
         return "Credential{" + "usr=" + usr + ", pwd=" + pwd + '}';
     }
-    
-    
-    
+
 }
