@@ -71,7 +71,7 @@ public class UserResource {
         store.delete(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
-    
+
     @Path("posts")
     @RolesAllowed("users")
     public PostsResource posts() {

@@ -40,6 +40,11 @@
             <version>3.9.1.Final</version>
             <scope>provided</scope>
         </dependency>
+         <dependency>
+            <groupId>com.airhacks</groupId>
+            <artifactId>jaxrs-cors</artifactId>
+            <version>0.0.2</version>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>

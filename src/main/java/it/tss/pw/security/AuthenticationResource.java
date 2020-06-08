@@ -7,8 +7,12 @@ package it.tss.pw.security;
 
 import it.tss.pw.users.User;
 import it.tss.pw.users.UserStore;
+import java.math.BigDecimal;
 import java.util.Optional;
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -22,6 +26,7 @@ import javax.ws.rs.core.Response;
  * @author posta
  */
 @Path("/authentication")
+@PermitAll
 public class AuthenticationResource {
 
     @Inject
@@ -36,8 +41,10 @@ public class AuthenticationResource {
     public Response login(Credential credential) {
         Optional<User> user = store.search(credential);
         if (user.isPresent()) {
-            return Response.status(Response.Status.OK)
-                    .header("token", token(user.get()))
+            JsonObject jwt = Json.createObjectBuilder()
+                    .add("token", token(user.get()))
+                    .build();
+            return Response.ok(jwt)
                     .build();
         }
         return Response.status(Response.Status.UNAUTHORIZED)
@@ -51,8 +58,10 @@ public class AuthenticationResource {
     public Response login(@FormParam("usr") String usr, @FormParam("pwd") String pwd) {
         Optional<User> user = store.search(new Credential(usr, pwd));
         if (user.isPresent()) {
-            return Response.status(Response.Status.OK)
-                    .header("token", token(user.get()))
+            JsonObject jwt = Json.createObjectBuilder()
+                    .add("token", token(user.get()))
+                    .build();
+            return Response.ok(jwt)
                     .build();
         }
         return Response.status(Response.Status.UNAUTHORIZED)
@@ -65,7 +74,7 @@ public class AuthenticationResource {
         System.out.println("------------ generated token -------------------");
         System.out.println(result);
         System.out.println("------------ curl command for test -------------");
-        System.out.println("curl -v -i -H'Authorization: Bearer " + result + "' http://localhost:8080/pw_lombardi/resources/users");
+        System.out.println("curl -v -i -H'Authorization: Bearer " + result + "' http://localhost:8080/pw-lombardi/resources/users");
         return result;
     }
 }

@@ -26,11 +26,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
-
 
 /**
  *
@@ -74,8 +74,9 @@ public class UsersResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("users")
-    public UserResource find(@PathParam("id") Long id) {
-        if (!id.equals(subjectId)) {
+    public UserResource find(@PathParam("id") Long id, @Context Request request) {
+        System.out.println(request.getMethod()  );
+        if (subjectId != null && !id.equals(subjectId)) {
             throw new ForbiddenException();
         }
         UserResource sub = resource.getResource(UserResource.class);

@@ -26,7 +26,7 @@ import org.eclipse.microprofile.jwt.Claims;
 
 /**
  *
- * @author alfonso
+ * @author posta
  */
 public class JWTManager {
 
@@ -38,23 +38,23 @@ public class JWTManager {
         try {
             JSONObject jwt = generateJWT(usr);
 
-            JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
+            JWSHeader header     = new JWSHeader.Builder(JWSAlgorithm.RS256)
                     .keyID(PRIVATE_KEY)
                     .type(JOSEObjectType.JWT)
                     .build();
 
-            JWTClaimsSet claimSet = JWTClaimsSet.parse(jwt);
+            JWTClaimsSet claimSet   = JWTClaimsSet.parse(jwt);
 
-            SignedJWT signedJWT = new SignedJWT(header, claimSet);
+            SignedJWT signedJWT = new SignedJWT(header,claimSet);
 
             PrivateKey privateKey = readPrivateKey(PRIVATE_KEY);
-
+            
             RSASSASigner signer = new RSASSASigner(privateKey);
-
+            
             signedJWT.sign(signer);
 
             return signedJWT.serialize();
-
+            
         } catch (ParseException ex) {
             Logger.getLogger(JWTManager.class.getName()).log(Level.SEVERE, null, ex);
             throw new JwtTokenException("Impossibile generare il JWT token ");

@@ -23,7 +23,7 @@ import javax.validation.constraints.NotEmpty;
  *
  * @author posta
  */
-     @NamedQueries({
+@NamedQueries({
     @NamedQuery(name = User.FIND_ALL, query = "select e from User e order by e.lastName"),
     @NamedQuery(name = User.FIND_BY_USR_PWD, query = "select e from User e where e.usr= :usr and e.pwd= :pwd"),
     @NamedQuery(name = User.FIND_BY_USR, query = "select e from User e where e.usr= :usr"),
@@ -55,7 +55,7 @@ public class User extends AbstractEntity implements Serializable {
     private String pwd;
 
     @Column(name = "birth_date")
-    @JsonbDateFormat("dd/MM/yyyy")
+    @JsonbDateFormat("yyyy-MM-dd")
     private LocalDate birthDate;
 
     public User() {
@@ -124,4 +124,3 @@ public class User extends AbstractEntity implements Serializable {
     }
 
 }
-

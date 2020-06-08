@@ -5,8 +5,11 @@
  */
 package it.tss.pw.users;
 
+
+import it.tss.pw.security.SecurityEncoding;
 import it.tss.pw.security.Credential;
 import java.util.Collection;
+import it.tss.pw.security.SecurityEncoding;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +18,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -48,6 +52,7 @@ public class UserStore {
         if (findByUsr(u.getUsr()).isPresent()) {
             throw new UserAlreadyExistException(u.getUsr());
         }
+        u.setPwd(SecurityEncoding.shaHash(u.getPwd()));
         return em.merge(u);
     }
 
@@ -75,13 +80,14 @@ public class UserStore {
     }
 
     public Optional<User> search(Credential credential) {
+        credential.setPwd(SecurityEncoding.shaHash(credential.getPwd()));
         try {
             User found = em.createNamedQuery(User.FIND_BY_USR_PWD, User.class)
                     .setParameter("usr", credential.getUsr())
                     .setParameter("pwd", credential.getPwd())
                     .getSingleResult();
             return Optional.of(found);
-        } catch (Exception ex) {
+        } catch (NoResultException ex) {
             Logger.getLogger(UserStore.class.getName()).log(Level.SEVERE, null, ex);
             return Optional.empty();
         }
